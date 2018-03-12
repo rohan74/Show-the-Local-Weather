@@ -1,0 +1,7 @@
+#temperature, #display-location, #weather, #tempunit{
+    font-size: 24px;
+}
+
+#tempunit{
+    font-weight: bold;
+}

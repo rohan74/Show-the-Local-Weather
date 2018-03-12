@@ -1,7 +1,11 @@
-const address = document.getElementById('display-location');
+const address = document.getElementById('display-icon');
 const temperature = document.getElementById('temperature');
-var lat,lon;
+const weather = document.getElementById('weather');
+const displayLocation = document.getElementById('display-location');
+const tempUnit =  document.getElementById('tempunit');
+let lat,lon;
 
+//use HTML5 geolocation to find coordinates
 function getLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(showPosition,showError);
@@ -37,6 +41,7 @@ getLocation();
 
 const weatherApi = 'https://fcc-weather-api.glitch.me/api/current?';
 
+//fetch data from api
 function getWeather(lat,lon){
     let endpoint = weatherApi + 'lat=' + lat +'&lon=' + lon;
     fetch(endpoint).then(response => {
@@ -48,19 +53,37 @@ function getWeather(lat,lon){
     ).then(jsonResponse);
 }
 
-
+// display weather
 function jsonResponse(res){
         console.log(res)
+        displayLocation.innerHTML = res.name +',' + res.sys.country;
+        weather.innerHTML = res.weather[0].description.toUpperCase();
+
         let img = document.createElement('img');
         img.setAttribute('src', res.weather[0].icon);
         img.setAttribute('alt', res.weather[0].description);
-        img.setAttribute("width", "300");
-        img.setAttribute("height", "250");
-        img.setAttribute("class", "mx-auto d-block");
-        let temp = res.main.temp + ' C';
-        address.append(img,temp);
-}
+        img.setAttribute("width", "100");
+        img.setAttribute("height", "100");
+        img.classList.add('mx-auto','d-block');
+        address.append(img);
+        const temp = res.main.temp;
+        tempUnit.innerHTML = 'C'
+        temperature.innerHTML = temp;
 
+
+        tempUnit.addEventListener('click',() => {
+            if(tempUnit.innerHTML === 'C'){
+                tempUnit.innerHTML = 'F';
+                tempUnit.style.textDecorationLine  = 'underline';
+                temperature.innerHTML = ((temp *(9/5)) + 32).toFixed(2);
+            }
+            else{
+                tempUnit.innerHTML = 'C';
+                temperature.innerHTML = temp;
+            }
+        })
+
+}
 
 
 
